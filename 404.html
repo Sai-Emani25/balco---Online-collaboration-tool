@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Live-Sync Classroom - Real-time collaborative workspace"
+    />
+    <title>Live-Sync Classroom</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script>
+      // SPA fallback: redirect unknown routes to the app root
+      (function() {
+        var base = '/balco---Online-collaboration-tool';
+        var redirectUrl = window.location.origin + base + '/';
+        // Preserve the original path so the app can optionally use it
+        sessionStorage.setItem('redirectPath', window.location.pathname + window.location.search + window.location.hash);
+        window.location.replace(redirectUrl);
+      })();
+    </script>
+  </body>
+</html>
