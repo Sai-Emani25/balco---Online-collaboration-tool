@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/balco---Online-collaboration-tool/static/css/main.37c765d6.css",
+    "main.js": "/balco---Online-collaboration-tool/static/js/main.a4127516.js",
+    "index.html": "/balco---Online-collaboration-tool/index.html",
+    "main.37c765d6.css.map": "/balco---Online-collaboration-tool/static/css/main.37c765d6.css.map",
+    "main.a4127516.js.map": "/balco---Online-collaboration-tool/static/js/main.a4127516.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.37c765d6.css",
+    "static/js/main.a4127516.js"
+  ]
+}
