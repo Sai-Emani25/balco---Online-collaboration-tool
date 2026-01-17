@@ -30,15 +30,7 @@ const Button = styled.button`
   }
 `;
 
-const CopyMessage = styled.span`
-  font-size: 0.85rem;
-  color: #4CAF50;
-  background-color: white;
-  padding: 0.3rem 0.6rem;
-  border-radius: 4px;
-`;
-
-function ShareLink({ roomId }) {
+function BalcoShareLink({ roomId }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -58,4 +50,4 @@ function ShareLink({ roomId }) {
   );
 }
 
-export default ShareLink;
+export default BalcoShareLink;

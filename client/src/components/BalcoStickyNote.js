@@ -82,8 +82,7 @@ const ColorPicker = styled.input`
   cursor: pointer;
 `;
 
-function StickyNote({ note, onUpdate, onDelete, onConnect, isConnecting }) {
-  const [isEditing, setIsEditing] = useState(false);
+function BalcoStickyNote({ note, onUpdate, onDelete, onConnect, isConnecting }) {
   const [content, setContent] = useState(note.content || '');
 
   const handleContentChange = (e) => {
@@ -91,7 +90,6 @@ function StickyNote({ note, onUpdate, onDelete, onConnect, isConnecting }) {
   };
 
   const handleBlur = () => {
-    setIsEditing(false);
     onUpdate({ ...note, content });
   };
 
@@ -108,7 +106,6 @@ function StickyNote({ note, onUpdate, onDelete, onConnect, isConnecting }) {
       <TextArea
         value={content}
         onChange={handleContentChange}
-        onFocus={() => setIsEditing(true)}
         onBlur={handleBlur}
         placeholder="Type your note here..."
       />
@@ -130,4 +127,4 @@ function StickyNote({ note, onUpdate, onDelete, onConnect, isConnecting }) {
   );
 }
 
-export default StickyNote;
+export default BalcoStickyNote;

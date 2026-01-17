@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Draggable from 'react-draggable';
-import StickyNote from './StickyNote';
+import BalcoStickyNote from './BalcoStickyNote';
 
 const CanvasContainer = styled.div`
   flex: 1;
@@ -35,7 +35,7 @@ const Connection = styled.line`
   }
 `;
 
-function Canvas({ notes, connections, onNoteUpdate, onNoteDelete, onConnectionUpdate, onConnectionDelete }) {
+function BalcoCanvas({ notes, connections, onNoteUpdate, onNoteDelete, onConnectionUpdate, onConnectionDelete }) {
   const [connectingFrom, setConnectingFrom] = useState(null);
 
   const handleNoteDrag = (noteId, e, data) => {
@@ -105,7 +105,7 @@ function Canvas({ notes, connections, onNoteUpdate, onNoteDelete, onConnectionUp
           handle=".drag-handle"
         >
           <div style={{ position: 'absolute' }}>
-            <StickyNote
+            <BalcoStickyNote
               note={note}
               onUpdate={onNoteUpdate}
               onDelete={onNoteDelete}
@@ -119,4 +119,4 @@ function Canvas({ notes, connections, onNoteUpdate, onNoteDelete, onConnectionUp
   );
 }
 
-export default Canvas;
+export default BalcoCanvas;

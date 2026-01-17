@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import io from 'socket.io-client';
-import Canvas from '../components/Canvas';
-import Toolbar from '../components/Toolbar';
-import ShareLink from '../components/ShareLink';
+import BalcoCanvas from '../components/BalcoCanvas';
+import BalcoToolbar from '../components/BalcoToolbar';
+import BalcoShareLink from '../components/BalcoShareLink';
 
 const Container = styled.div`
   width: 100vw;
@@ -28,13 +28,12 @@ const Title = styled.h2`
   margin: 0;
 `;
 
-const socket = io('http://localhost:5000');
+const socket = io('http://localhost:1000');
 
-function Room() {
+function BalcoRoom() {
   const { roomId } = useParams();
   const [notes, setNotes] = useState([]);
   const [connections, setConnections] = useState([]);
-  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     // Join the room
@@ -82,18 +81,12 @@ function Room() {
       setConnections(prev => prev.filter(c => c.id !== connectionId));
     });
 
-    // Listen for user events
-    socket.on('user-joined', ({ userId }) => {
-      setUsers(prev => [...prev, userId]);
-    });
-
     return () => {
       socket.off('room-state');
       socket.off('note-updated');
       socket.off('note-deleted');
       socket.off('connection-updated');
       socket.off('connection-deleted');
-      socket.off('user-joined');
     };
   }, [roomId]);
 
@@ -137,10 +130,10 @@ function Room() {
     <Container>
       <Header>
         <Title>Live-Sync Classroom</Title>
-        <ShareLink roomId={roomId} />
+        <BalcoShareLink roomId={roomId} />
       </Header>
-      <Toolbar onAddNote={handleNoteUpdate} />
-      <Canvas
+      <BalcoToolbar onAddNote={handleNoteUpdate} />
+      <BalcoCanvas
         notes={notes}
         connections={connections}
         onNoteUpdate={handleNoteUpdate}
@@ -152,4 +145,4 @@ function Room() {
   );
 }
 
-export default Room;
+export default BalcoRoom;

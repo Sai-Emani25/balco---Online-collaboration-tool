@@ -63,7 +63,7 @@ const Input = styled.input`
   width: 300px;
 `;
 
-function Home() {
+function BalcoHome() {
   const navigate = useNavigate();
   const [showJoinInput, setShowJoinInput] = React.useState(false);
   const [roomId, setRoomId] = React.useState('');
@@ -111,4 +111,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default BalcoHome;

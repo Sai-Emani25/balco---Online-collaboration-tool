@@ -48,7 +48,7 @@ const ColorPalette = styled.div`
 
 const colors = ['#ffeb3b', '#ff9800', '#f44336', '#e91e63', '#9c27b0', '#3f51b5', '#2196f3', '#00bcd4', '#4CAF50', '#8bc34a'];
 
-function Toolbar({ onAddNote }) {
+function BalcoToolbar({ onAddNote }) {
   const [selectedColor, setSelectedColor] = React.useState('#ffeb3b');
 
   const handleAddNote = () => {
@@ -83,4 +83,4 @@ function Toolbar({ onAddNote }) {
   );
 }
 
-export default Toolbar;
+export default BalcoToolbar;
