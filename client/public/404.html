@@ -14,12 +14,14 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <script>
-      // Redirect all 404s to index for SPA routing
-      const redirect = sessionStorage.getItem('redirect');
-      if (redirect) {
-        sessionStorage.removeItem('redirect');
-        window.location.replace(redirect);
-      }
+      // SPA fallback: redirect unknown routes to the app root
+      (function() {
+        var base = '/balco---Online-collaboration-tool';
+        var redirectUrl = window.location.origin + base + '/';
+        // Preserve the original path so the app can optionally use it
+        sessionStorage.setItem('redirectPath', window.location.pathname + window.location.search + window.location.hash);
+        window.location.replace(redirectUrl);
+      })();
     </script>
   </body>
 </html>
