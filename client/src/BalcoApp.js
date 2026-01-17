@@ -5,8 +5,11 @@ import BalcoRoom from './pages/BalcoRoom';
 import './BalcoApp.css';
 
 function BalcoApp() {
+  // Use PUBLIC_URL so GitHub Pages serves routes under the repo path
+  const basename = process.env.PUBLIC_URL || '/balco---Online-collaboration-tool';
+
   return (
-    <Router>
+    <Router basename={basename}>
       <div className="App">
         <Routes>
           <Route path="/" element={<BalcoHome />} />
