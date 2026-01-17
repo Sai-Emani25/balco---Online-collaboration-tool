@@ -28,16 +28,45 @@ const Title = styled.h2`
   margin: 0;
 `;
 
-const socket = io('http://localhost:1000');
+const ErrorMessage = styled.div`
+  background-color: #ff9800;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+`;
+
+let socket = null;
 
 function BalcoRoom() {
   const { roomId } = useParams();
   const [notes, setNotes] = useState([]);
   const [connections, setConnections] = useState([]);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    // Join the room
-    socket.emit('join-room', roomId);
+    try {
+      // Try to connect to backend
+      socket = io('http://localhost:1000', {
+        reconnection: true,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        reconnectionAttempts: 3
+      });
+
+      socket.on('connect', () => {
+        setIsConnected(true);
+        socket.emit('join-room', roomId);
+      });
+
+      socket.on('disconnect', () => {
+        setIsConnected(false);
+      });
+
+      socket.on('connect_error', (error) => {
+        console.log('Connection error:', error);
+        setIsConnected(false);
+      });
 
     // Listen for initial room state
     socket.on('room-state', (roomState) => {
@@ -82,12 +111,20 @@ function BalcoRoom() {
     });
 
     return () => {
-      socket.off('room-state');
-      socket.off('note-updated');
-      socket.off('note-deleted');
-      socket.off('connection-updated');
-      socket.off('connection-deleted');
+      if (socket) {
+        socket.off('room-state');
+        socket.off('note-updated');
+        socket.off('note-deleted');
+        socket.off('connection-updated');
+        socket.off('connection-deleted');
+        socket.off('connect');
+        socket.off('disconnect');
+      }
     };
+    } catch (error) {
+      console.log('Failed to initialize socket:', error);
+      setIsConnected(false);
+    }
   }, [roomId]);
 
   const handleNoteUpdate = (note) => {
@@ -100,12 +137,16 @@ function BalcoRoom() {
       }
       return [...prev, note];
     });
-    socket.emit('update-note', { roomId, note });
+    if (socket && isConnected) {
+      socket.emit('update-note', { roomId, note });
+    }
   };
 
   const handleNoteDelete = (noteId) => {
     setNotes(prev => prev.filter(n => n.id !== noteId));
-    socket.emit('delete-note', { roomId, noteId });
+    if (socket && isConnected) {
+      socket.emit('delete-note', { roomId, noteId });
+    }
   };
 
   const handleConnectionUpdate = (connection) => {
@@ -118,16 +159,25 @@ function BalcoRoom() {
       }
       return [...prev, connection];
     });
-    socket.emit('update-connection', { roomId, connection });
+    if (socket && isConnected) {
+      socket.emit('update-connection', { roomId, connection });
+    }
   };
 
   const handleConnectionDelete = (connectionId) => {
     setConnections(prev => prev.filter(c => c.id !== connectionId));
-    socket.emit('delete-connection', { roomId, connectionId });
+    if (socket && isConnected) {
+      socket.emit('delete-connection', { roomId, connectionId });
+    }
   };
 
   return (
     <Container>
+      {!isConnected && (
+        <ErrorMessage>
+          ⚠️ Offline Mode: Backend server not available. Changes will not be synced. For full features, run the backend server locally.
+        </ErrorMessage>
+      )}
       <Header>
         <Title>Live-Sync Classroom</Title>
         <BalcoShareLink roomId={roomId} />
