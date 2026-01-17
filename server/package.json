@@ -1,7 +1,7 @@
 {
   "name": "balco-server",
   "version": "1.0.0",
-  "description": "Backend server for Live-Sync Classroom",
+  "description": "Backend server for Balco",
   "main": "BalcoServer.js",
   "scripts": {
     "start": "node BalcoServer.js",

@@ -81,12 +81,12 @@ function BalcoHome() {
 
   return (
     <Container>
-      <Title>🎨 Live-Sync Classroom</Title>
+      <Title>🎨 Balco</Title>
       <Subtitle>
         Collaborate in real-time with digital sticky notes, task management, and instant synchronization.
         Create projects, connect ideas, and work together seamlessly.
       </Subtitle>
-      
+
       {!showJoinInput ? (
         <ButtonContainer>
           <CreateButton onClick={createRoom}>Create New Room</CreateButton>
@@ -107,8 +107,53 @@ function BalcoHome() {
           </Button>
         </div>
       )}
+
+      {/* Recent Rooms Component */}
+      <RecentRooms />
+
     </Container>
   );
 }
+
+function RecentRooms() {
+  const navigate = useNavigate();
+  const [recent, setRecent] = React.useState([]);
+
+  React.useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('balco_recent_rooms') || '[]');
+    setRecent(saved);
+  }, []);
+
+  if (recent.length === 0) return null;
+
+  return (
+    <div style={{ marginTop: '3rem', width: '100%', maxWidth: '600px' }}>
+      <h3 style={{ textAlign: 'center', marginBottom: '1rem', opacity: 0.8 }}>Recent Rooms</h3>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        {recent.map(room => (
+          <div
+            key={room.id}
+            onClick={() => navigate(`/room/${room.id}`)}
+            style={{
+              background: 'rgba(255, 255, 255, 0.1)',
+              padding: '1rem',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              backdropFilter: 'blur(5px)',
+              border: '1px solid rgba(255,255,255,0.2)'
+            }}
+          >
+            <span style={{ fontWeight: 'bold' }}>{room.name || 'Untitled Room'}</span>
+            <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>ID: {room.id}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 
 export default BalcoHome;

@@ -24,7 +24,48 @@ app.use(express.json());
 // });
 
 // Store active rooms and their data in memory
-const rooms = new Map();
+const fs = require('fs');
+const path = require('path');
+
+// Persistence setup
+const DATA_DIR = path.join(__dirname, 'data');
+const DATA_FILE = path.join(DATA_DIR, 'rooms.json');
+
+// Ensure data directory exists
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR);
+}
+
+// Load rooms from file
+let rooms = new Map();
+
+function loadRooms() {
+  try {
+    if (fs.existsSync(DATA_FILE)) {
+      const data = fs.readFileSync(DATA_FILE, 'utf8');
+      const roomsObj = JSON.parse(data);
+      // Convert object back to Map
+      rooms = new Map(Object.entries(roomsObj));
+      console.log(`Loaded ${rooms.size} rooms from storage`);
+    }
+  } catch (error) {
+    console.error('Error loading rooms:', error);
+    rooms = new Map();
+  }
+}
+
+function saveRooms() {
+  try {
+    // Convert Map to object for JSON storage
+    const roomsObj = Object.fromEntries(rooms);
+    fs.writeFileSync(DATA_FILE, JSON.stringify(roomsObj, null, 2));
+  } catch (error) {
+    console.error('Error saving rooms:', error);
+  }
+}
+
+// Load initial state
+loadRooms();
 
 io.on('connection', (socket) => {
   console.log('New client connected:', socket.id);
@@ -33,18 +74,20 @@ io.on('connection', (socket) => {
   socket.on('join-room', (roomId) => {
     socket.join(roomId);
     console.log(`Client ${socket.id} joined room ${roomId}`);
-    
+
     // Initialize room if it doesn't exist
     if (!rooms.has(roomId)) {
       rooms.set(roomId, {
+        name: 'Untitled Room',
         notes: [],
         connections: []
       });
+      saveRooms();
     }
-    
+
     // Send current room state to the new user
     socket.emit('room-state', rooms.get(roomId));
-    
+
     // Notify others in the room
     socket.to(roomId).emit('user-joined', { userId: socket.id });
   });
@@ -59,7 +102,8 @@ io.on('connection', (socket) => {
       } else {
         room.notes.push(note);
       }
-      
+      saveRooms();
+
       // Broadcast to all users in the room except sender
       socket.to(roomId).emit('note-updated', note);
     }
@@ -71,6 +115,7 @@ io.on('connection', (socket) => {
     if (room) {
       room.notes = room.notes.filter(n => n.id !== noteId);
       socket.to(roomId).emit('note-deleted', noteId);
+      saveRooms();
     }
   });
 
@@ -84,7 +129,8 @@ io.on('connection', (socket) => {
       } else {
         room.connections.push(connection);
       }
-      
+      saveRooms();
+
       socket.to(roomId).emit('connection-updated', connection);
     }
   });
@@ -95,6 +141,17 @@ io.on('connection', (socket) => {
     if (room) {
       room.connections = room.connections.filter(c => c.id !== connectionId);
       socket.to(roomId).emit('connection-deleted', connectionId);
+      saveRooms();
+    }
+  });
+
+  // Update room name
+  socket.on('update-room-name', ({ roomId, name }) => {
+    const room = rooms.get(roomId);
+    if (room) {
+      room.name = name;
+      socket.to(roomId).emit('room-name-updated', name);
+      saveRooms();
     }
   });
 

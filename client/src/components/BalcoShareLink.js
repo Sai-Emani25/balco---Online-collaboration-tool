@@ -43,7 +43,10 @@ function BalcoShareLink({ roomId }) {
   return (
     <Container>
       <RoomId>Room: {roomId}</RoomId>
-      <Button onClick={handleCopy}>
+      <Button
+        onClick={handleCopy}
+        title="To share with others on your WiFi, replace 'localhost' with your computer's IP address (e.g., 192.168.x.x) in the copied link."
+      >
         {copied ? '✓ Copied!' : '📋 Share Link'}
       </Button>
     </Container>

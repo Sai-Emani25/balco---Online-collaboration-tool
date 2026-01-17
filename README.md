@@ -1,4 +1,4 @@
-# 🎨 Live-Sync Classroom
+# 🎨 Balco
 
 A real-time collaborative workspace where multiple users can create sticky notes, manage tasks, and collaborate on projects with instant synchronization using WebSockets.
 
@@ -122,7 +122,7 @@ Create a `.env` file in the `server` directory (use `.env.example` as template):
 
 ```env
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/livesync
+MONGODB_URI=mongodb://localhost:27017/balco
 ```
 
 **Note**: MongoDB is optional for the initial setup. The app uses in-memory storage by default.
